@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rest-deployment
+  labels:
+    app: rest
+    tier: rest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rest
+      tier: rest
+  template:
+    metadata:
+      labels:
+        app: rest
+        tier: rest
+    spec:
+      containers:
+      - name: rest
+        image: dockermrj33/portfolio-manager-rest:1.0.2
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: datasource-url
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: mysql-user-name
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: mysql-password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rest-service
+  labels:
+    app: rest-service
+    tier: rest
+spec:
+  type: NodePort
+  selector: 
+    app: rest
+    tier: rest
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30110

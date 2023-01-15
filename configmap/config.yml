@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  mysql-url: mysql-service
+  db-host: mysqldb
+  datasource-url: jdbc:mysql://mysqldb/portfoliomanagerdb?useSSL=false&allowPublicKeyRetrieval=true
+  base-url: "https://myholdings.com/portfolio-manager"
